@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: products
+    // Fields:
+    //   - name: string (required)
+    //   - pricePerKg: number (optional)
+    //   - pricePerBox: number (optional)
+    //   - updatedAt: timestamp (required)
+    //
+    // Collection: metadata
+    // Document: lastUpload
+    // Fields:
+    //   - lastUploadDate: timestamp
+    //   - uploadedBy: string
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "souqalfresh@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'updatedAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 200 &&
+             (data.pricePerKg == null || data.pricePerKg is number) &&
+             (data.pricePerBox == null || data.pricePerBox is number) &&
+             data.updatedAt is timestamp;
+    }
+
+    match /products/{productId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() && isValidProduct(request.resource.data);
+      allow update: if isAuthenticated() && isValidProduct(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /metadata/lastUpload {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

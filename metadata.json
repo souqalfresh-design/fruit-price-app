@@ -1,0 +1,5 @@
+{
+  "name": "Souq Al Fresh - Abu Dhabi",
+  "description": "A Progressive Web App for Souq Al Fresh shop staff to quickly check daily selling prices of fruits and vegetables.",
+  "requestFramePermissions": ["microphone", "camera"]
+}

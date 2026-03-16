@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A fruit or vegetable item with its daily prices.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the item."
+        },
+        "pricePerKg": {
+          "type": "number",
+          "description": "Price per Kilogram."
+        },
+        "pricePerBox": {
+          "type": "number",
+          "description": "Price per Box."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time this item was updated."
+        }
+      },
+      "required": ["name", "updatedAt"]
+    },
+    "Metadata": {
+      "title": "Metadata",
+      "description": "Global metadata for the price checker app.",
+      "type": "object",
+      "properties": {
+        "lastUploadDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date of the last Excel upload."
+        },
+        "uploadedBy": {
+          "type": "string",
+          "description": "Email of the user who uploaded the file."
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of products and their prices."
+    },
+    "/metadata/lastUpload": {
+      "schema": "Metadata",
+      "description": "Stores the timestamp of the last price update."
+    }
+  }
+}
